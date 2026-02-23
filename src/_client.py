@@ -14,7 +14,11 @@ class OzonClient:
         api_key: str | None = None,
         org: str | None = None,
     ) -> None:
-        load_dotenv()
+        try:
+            load_dotenv()
+        except Exception as e:
+            print(f"Warning: Could not load .env file: {e}")
+
         if api_key is None:
             api_key = os.getenv("API_KEY")
             self.api_key = api_key
@@ -28,4 +32,5 @@ class OzonClient:
             raise KeyError("Please provide Ozon seller Client Id")
 
         if org is None:
-            self.org = org
+            org = os.getenv("ORG")
+        self.org = org

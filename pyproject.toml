@@ -1,15 +1,10 @@
 [project]
 name = "ozon-py"
 version = "0.1.0"
-description = "Add your description here"
+description = "Ozon client"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["anyio>=4.12.1", "dotenv>=0.9.9", "httpx>=0.28.1"]
 
 [dependency-groups]
 dev = ["black>=26.1.0"]
-
-# [project.scripts]
-# ozon = "main:main"
-# Or if your main file is directly in the root:
-# ozon = "main:main"
