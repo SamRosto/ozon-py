@@ -1,5 +1,5 @@
 import pydantic
-from typing import Literal, Mapping, Protocol, TypeVar
+from typing import Literal, Mapping, Protocol, TypeVar, Union
 
 ModelT = TypeVar("ModelT", bound=pydantic.BaseModel)
 T = TypeVar("T")
@@ -18,5 +18,5 @@ class HeadersProtocol(Protocol):
 omit = Omit()
 Omittable = _T | Omit
 
-Headers = Mapping[str, str | omit]
+Headers = Mapping[str, Union[str, omit]]
 HeadersT = Headers | HeadersProtocol
