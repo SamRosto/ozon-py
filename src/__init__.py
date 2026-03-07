@@ -1,4 +1,5 @@
 from ._client import OzonClient
+from ._utils import parse_url_endpoint
 from ._types import (
     omit,
     ModelT,
@@ -7,7 +8,6 @@ from ._types import (
     Omittable,
     Headers,
     HeadersProtocol,
-    HeadersModel,
     HeadersT,
     ClientConfigModel,
 )
@@ -21,7 +21,7 @@ __all__ = [
     "HeadersT",
     "Omittable",
     "OzonClient",
-    "HeadersModel",
     "HeadersProtocol",
     "ClientConfigModel",
+    "parse_url_endpoint",
 ]

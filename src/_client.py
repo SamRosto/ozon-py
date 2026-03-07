@@ -3,10 +3,13 @@ from typing import Optional
 from dotenv import load_dotenv
 import os
 
-from ._types import ClientConfigModel, HeadersModel, HeadersT
+from src._utils import BaseOzonClient
+from src.main_info.main_methods import ApiKeyRoles
+
+from ._types import ClientConfigModel, HeadersT
 
 
-class OzonClient:
+class OzonClient(BaseOzonClient):
     def __init__(self, *, config: Optional[ClientConfigModel] = None) -> None:
         try:
             load_dotenv()
@@ -21,6 +24,10 @@ class OzonClient:
         self.api_key = config.api_key
         self.org = config.org
         self.headers = self._get_headers()
+
+        super().__init__()
+
+        self._check_roles()
 
     def _load_from_env(self) -> ClientConfigModel:
         client_id = os.getenv("CLIENT_ID") or os.getenv("CLIENT-ID")
@@ -37,7 +44,11 @@ class OzonClient:
         return ClientConfigModel(client_id=client_id, api_key=api_key, org=org)
 
     def _get_headers(self) -> HeadersT:
-        return HeadersModel(Client_Id=self.client_id, Api_Key=self.api_key)
+        return {
+            "Client-Id": self.client_id,
+            "Api-Key": self.api_key,
+            "Content-Type": "application/json",
+        }
 
     @classmethod
     def from_env(cls) -> "OzonClient":
@@ -53,7 +64,7 @@ class OzonClient:
     ) -> "OzonClient":
         """
         Create from params.
-        client = OzonClient.from_config(
+        client = OzonClient.from_`config(
             client_id="12345",
             api_key="your-api-key",
             org="org_1"
@@ -64,3 +75,21 @@ class OzonClient:
 
     def __repr__(self) -> str:
         return f"OzonClient(client_id='{self.client_id}', api_key='***{self.api_key[-4:]}')\nheaders={self.headers}"
+
+    def _check_roles(self):
+        settings = ApiKeyRoles.get_settings(
+            base_url=self.base_url, headers=self.headers
+        )
+
+        for role in settings.roles:
+            self.role_name = role.name
+            role_methods = role.methods
+            self._available_methods.extend(role_methods)  # добавляем в список
+
+        # return settings
+
+    @property
+    def available_methods(self):
+        """Отобоажает список доступеых методов по API ключу"""
+        # return [m for m in self.available_methods]
+        return self._available_methods

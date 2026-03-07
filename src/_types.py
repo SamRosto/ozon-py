@@ -28,25 +28,4 @@ class HeadersProtocol(Protocol):
 
 Headers = Mapping[str, Union[str, omit]]
 
-
-class HeadersModel(pydantic.BaseModel):
-    """Валидируемые HTTP заголовки для Ozon API."""
-
-    Client_Id: str = pydantic.Field(..., description="Ozon Client ID")
-    Api_Key: str = pydantic.Field(..., description="Ozon API Key")
-    Content_Type: Optional[str] = "application/json"
-
-    class Config:
-        extra = "allow"
-
-    @pydantic.model_validator(mode="after")
-    def validate_headers(self) -> "HeadersModel":
-        if not self.Client_Id:
-            raise ValueError("Client-Id cannot be empty")
-        if not self.Api_Key:
-            raise ValueError("Api-Key cannot be empty")
-        return self
-
-
-# HeadersT = Headers | HeadersProtocol
-HeadersT = dict[str, str] | HeadersModel
+HeadersT = Headers | HeadersProtocol
